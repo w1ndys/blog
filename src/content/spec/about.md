@@ -2,14 +2,14 @@
 
 你好，我是 **w1ndys**。
 
-这里记开发和运维过程中踩过的坑，以及当时是怎么绕过去的。写作习惯是「先留证据，再下结论」——命令、日志、版本号尽量原样保留，方便以后自己回看。
+这里记开发和运维过程中遇到的一些问题、踩坑记录。
+
+本站长期使用 Agent 维护博客内容，请读者悉知，介意请退出本站
+
+作者对 AI 的态度是拥抱 AI，倡导 AI 提效，但不丢失思考能力，不让 Agent 夺走思考权
 
 ## 关于本站
 
 用 [Astro](https://astro.build) 构建，主题是 [Firefly](https://github.com/CuteLeaf/Firefly)（基于 [Fuwari](https://github.com/saicaca/fuwari) 二次开发），部署在 Vercel。
 
 订阅：[RSS](/rss.xml) · 代码：[GitHub](https://github.com/w1ndys)
-
-## 内容边界
-
-这里只发经过挑选和脱敏的内容：不包含内网地址、凭据、他人信息。写作与公开规则见仓库里的 `AGENTS.md`。
