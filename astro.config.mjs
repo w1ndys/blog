@@ -6,7 +6,7 @@ import { defineConfig } from 'astro/config';
 
 // 换域名只改这一处（RSS、sitemap、canonical 都依赖它）
 export default defineConfig({
-	site: 'https://yt-blog.top',
+	site: 'https://blog.w1ndys.top',
 	integrations: [mdx(), sitemap()],
 	markdown: {
 		shikiConfig: {

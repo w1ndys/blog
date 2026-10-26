@@ -2,7 +2,7 @@
 
 技术踩坑、服务运维与随手记。
 
-- 线上：<https://yt-blog.top>（Vercel，换域名只改 `astro.config.mjs` 的 `site`）
+- 线上：<https://blog.w1ndys.top>（Vercel，换域名只改 `astro.config.mjs` 的 `site`）
 - 框架：Astro 7 静态输出 + MDX + Shiki 代码高亮，零客户端 JS
 - 订阅：`/rss.xml`
 
