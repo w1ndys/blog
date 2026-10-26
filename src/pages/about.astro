@@ -1,0 +1,27 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { GITHUB_URL, SITE_AUTHOR, SITE_DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={`关于 · ${SITE_AUTHOR}`} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>关于</h1>
+			<p>
+				这里记一些开发和运维过程中踩过的坑，以及当时是怎么绕过去的。写作习惯是「先留证据，再下结论」——命令、
+				日志、版本号尽量原样保留，方便以后自己回看。
+			</p>
+			<p>
+				更多代码在 <a href={GITHUB_URL} target="_blank" rel="noopener">{GITHUB_URL}</a>。
+			</p>
+		</main>
+		<Footer />
+	</body>
+</html>

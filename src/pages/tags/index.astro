@@ -1,0 +1,66 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { collectTags, getPublishedPosts } from '../../lib/posts';
+
+const posts = await getPublishedPosts();
+const tags = collectTags(posts);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={`标签 · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			ul {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.75rem;
+				list-style: none;
+				padding: 0;
+			}
+			li a {
+				display: inline-block;
+				padding: 0.35rem 0.8rem;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 999px;
+				color: rgb(var(--black));
+				text-decoration: none;
+				font-size: 0.95rem;
+			}
+			li a:hover {
+				border-color: rgb(var(--accent));
+				color: rgb(var(--accent));
+			}
+			.count {
+				color: rgb(var(--gray));
+				font-size: 0.85rem;
+			}
+			.empty {
+				color: rgb(var(--gray));
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>标签</h1>
+			{tags.length === 0 ? (
+				<p class="empty">还没有文章，所以没有标签。</p>
+			) : (
+				<ul>
+					{tags.map(({ tag, count }) => (
+						<li>
+							<a href={`/tags/${tag}/`}>
+								{tag} <span class="count">{count}</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
