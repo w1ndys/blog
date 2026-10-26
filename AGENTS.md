@@ -1,43 +1,34 @@
-# 这个仓库怎么用（给 Agent 的工作约定）
+# Repository Guidelines
 
-这是 `w1ndys` 的公开技术博客：Astro 静态站，部署在 Vercel。本文只讲**在这个仓库里做事要遵守什么**，站点功能见 `README.md`。
+## Project Structure & Module Organization
 
-## 最重要的一条：内容默认不写这里
+Firefly is an Astro 7 site with Svelte islands and TypeScript configuration. Main source code lives in `src/`: routes in `src/pages`, layouts in `src/layouts`, reusable UI in `src/components`, styles in `src/styles`, content in `src/content`, helpers in `src/utils`, and Markdown/HTML plugins in `src/plugins`. Site configuration is split across `src/config` with matching type definitions in `src/types`; prefer imports from `@/config` when available. Static files served directly belong in `public`, source-managed images in `src/assets`, docs in `docs` and `Firefly-Docs`, and automation in `scripts`.
 
-- **所有新的记录、踩坑、决策、运维日志，默认写进私有笔记仓**，不是这个仓库。
-- 只有用户**明确说过「这个可以放到博客上」**（或等价的明确授权），才把对应内容搬到本仓发布。
-- 没有明确授权时，**不要**擅自把私有仓的内容"顺手"整理成文章，也不要提议某篇"看起来可以公开"。判断是否公开是用户的事，不是 Agent 的。
-- 用户的口头授权只对该篇有效，不推广到同类主题，不构成先例。
+## Build, Test, and Development Commands
 
-## 搬到本仓之前必须脱敏
+Use `pnpm`; the `preinstall` script enforces it.
 
-授权之后，逐项过一遍，命中就删或替换成占位符：
+- `pnpm dev` or `pnpm start`: run the local Astro dev server.
+- `pnpm check`: run Astro diagnostics.
+- `pnpm type-check`: run TypeScript with `--noEmit`.
+- `pnpm format`: format `src` with Biome.
+- `pnpm lint`: run Biome checks and safe fixes on `src`.
+- `pnpm build`: generate icons, LQIPs, the Astro build, font subsets, and Pagefind search output in `dist`.
+- `pnpm preview`: preview the production build locally.
+- `pnpm new-post`: scaffold a new content post.
 
-| 类型 | 处理 |
-|---|---|
-| 公网 IP、VPS 地址、家庭出口 IP | 换成 `VPS_IP` / `HOME_IP` 或删掉整句 |
-| 内网 / 隧道 / 容器拓扑、端口清单 | 不公开 |
-| 自有域名与子域结构的完整清单 | 只留示例域名，或改写成 `example.com` |
-| 凭据：AppID/AppSecret、Token、AESKey、JWT secret、密码、私钥 | **绝不出现**，示例一律 `YOUR_TOKEN` |
-| 真实用户 / 群 / 账号标识（群号、OpenID、微信号、昵称） | 不公开 |
-| 第三方服务的内部配置、其他人的机器信息 | 不公开 |
+## Coding Style & Naming Conventions
 
-脱敏不是"复制过去再删"：先在本仓新建文章，只粘授权范围内的技术内容，再补写上下文。宁可写得短，也不要带着内部信息发出去。
+Biome is the formatter and linter. It uses tabs for indentation and double quotes for JavaScript/TypeScript strings. Keep Astro and Svelte components in `PascalCase` (`PostCard.astro`, `Search.svelte`), config modules in `camelCase` ending with `Config.ts`, and utilities in descriptive kebab case such as `date-utils.ts`. Keep `src/types` aligned with `src/config`. Avoid unrelated formatting churn.
 
-## 写作约定
+## Testing Guidelines
 
-- 文件位置 `src/content/blog/`，命名 `YYYY-MM-DD-slug.md`（需要组件时用 `.mdx`）。
-- frontmatter 必填 `title` / `description` / `pubDate`；可选 `updatedDate` / `tags` / `draft` / `heroImage`。字段由 `src/content.config.ts` 的 zod schema 校验，写错会在构建时报错。
-- 没写完的文章一律 `draft: true`——只在 `pnpm dev` 下可见，不进列表、RSS 和构建产物。
-- 标签用英文小写短词（`docker`、`wechat`、`caddy`），一篇文章不要堆五个以上。
-- 技术细节优先原样保留：命令、版本号、报错原文。这些比结论更有复用价值。
-- 中文正文；中英文之间要不要加空格保持单篇一致。
+There is no dedicated unit-test framework configured. Before submitting changes, run `pnpm check`, `pnpm type-check`, and `pnpm build` for rendering, content, or generated asset work. For visual or interactive changes, verify with `pnpm dev` or `pnpm preview` and include screenshots in the PR. Name future tests near the feature they cover, using the local file name as the stem.
 
-## 技术约定
+## Commit & Pull Request Guidelines
 
-- 包管理器 `pnpm`，Node ≥ 22。
-- 优先用 Astro 内置能力：Markdown/MDX、Shiki 代码高亮、`@astrojs/rss`、`@astrojs/sitemap`。加依赖前先确认内置方案做不到。
-- 需要交互时写 island 组件并显式标注 `client:*`；不需要交互就别上框架组件。
-- 换域名只改 `astro.config.mjs` 的 `site`；站点标题、描述、作者在 `src/consts.ts`。
-- 增删页面后跑 `pnpm build`，通过再提交。
-- 提交信息用 `类型(范围): 中文描述`，例如 `feat(post): 新增微信公众平台接入踩坑记录`。
+Use Conventional Commits, matching the current history: `feat: ...`, `fix: ...`, and `chore: ...`. Keep commits and PRs focused on one concern. PRs should include a concise summary, linked issues when relevant, validation commands run, and screenshots for UI changes. Discuss major features or design changes in an issue or discussion before implementation.
+
+## Security & Configuration Tips
+
+Do not commit secrets, tokens, or service keys in config files. Keep deployment-specific settings in the target platform environment, and review generated files such as `dist`, `src/constants/lqips.json`, and `src/constants/icons.ts` before committing them.

@@ -1,27 +1,39 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { GITHUB_URL, SITE_AUTHOR, SITE_DESCRIPTION } from '../consts';
----
 
-<!doctype html>
-<html lang="zh-CN">
-	<head>
-		<BaseHead title={`关于 · ${SITE_AUTHOR}`} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>关于</h1>
-			<p>
-				这里记一些开发和运维过程中踩过的坑，以及当时是怎么绕过去的。写作习惯是「先留证据，再下结论」——命令、
-				日志、版本号尽量原样保留，方便以后自己回看。
-			</p>
-			<p>
-				更多代码在 <a href={GITHUB_URL} target="_blank" rel="noopener">{GITHUB_URL}</a>。
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+import { getEntry, render } from "astro:content";
+import Markdown from "@components/common/Markdown.astro";
+import { profileConfig } from "@/config/profileConfig";
+import { siteConfig } from "@/config/siteConfig";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import { getAuthorAvatarUrl } from "@/utils/schema-image";
+import { buildProfilePage } from "@/utils/schema-utils";
+
+const aboutPost = await getEntry("spec", "about");
+
+if (!aboutPost) {
+	throw new Error("About page content not found");
+}
+
+const { Content } = await render(aboutPost);
+
+const avatarUrl = await getAuthorAvatarUrl();
+const jsonLd = buildProfilePage({
+	site: siteConfig.site_url,
+	profileConfig,
+	authorUrl: Astro.url.toString(),
+	avatarUrl,
+	description: profileConfig.bio,
+});
+---
+<MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
+    <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full ">
+            <Markdown class="mt-2">
+                <Content />
+            </Markdown>
+        </div>
+    </div>
+</MainGridLayout>
