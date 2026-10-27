@@ -57,7 +57,17 @@
 | `displaySettingsConfig.ts` | 布局、横幅、目录等显示项 |
 | 其余 `*Config.ts` | 相册、动态、友链、书签、音乐、打赏等，对应页面在 `siteConfig.pages` 里开关 |
 
-当前把 `friends` / `guestbook` / `dynamic` / `projects` / `gallery` / `booknav` / `sponsor` 都关了（关掉即返回 404 并隐藏导航项），只留文章、标签、归档、关于。要用某个功能时先清理它自带的示例数据，再打开开关。
+当前把 `friends` / `guestbook` / `dynamic` / `projects` / `gallery` / `booknav` / `sponsor` 都关了，只留文章、标签、归档、关于。**注意关掉不等于 404**：静态构建下 `Astro.redirect()` 只能生成 meta refresh（URL 仍返回 200，靠 `noindex` + canonical 兜 SEO），所以别拿状态码判断开关是否生效。要用某个功能时先清理它自带的示例数据，再打开开关。
+
+## 与上游主题对齐
+
+本站是 [Firefly](https://github.com/CuteLeaf/Firefly) 的**复制式使用**（不是 fork），主题代码以上游提交为准：
+
+- **依赖升级跟随上游**，不单独接受 dependabot 的 minor / major。dependabot 只收 patch，`@mermanjs/web` 连 patch 也 ignore（0.x 的 minor 允许 breaking，0.9.2 移除了 `assertSafeSvgForDom` 与 `pkg/*.wasm`）。
+- **同步用 `scripts/sync-upstream.sh`**：备份当前 HEAD → 克隆上游 → 按保护清单 rsync 覆盖 → `pnpm install && pnpm build` 验证。
+- **保护清单不能少**：`src/content/`、`src/config/`、`src/constants/*.json`、`pnpm-lock.yaml`、`README.md`、`AGENTS.md`、`.github/dependabot.yml`、`wrangler.jsonc`、`docs/`、本脚本自身。同步后要检查 `public/` 有没有被上游示例资源覆盖。
+- **对齐点记录在 [`docs/upstream.md`](docs/upstream.md)**：每次同步后更新其中的 commit 与日期，并过一遍 `git diff --stat`。
+- 上游待合并的相关 PR 也记在那份文档里（比如清空内容后残留页面的修复），合并后再跟一次。
 
 ## 技术约定
 
